@@ -89,7 +89,20 @@ class Student {
 			$count++;
 		}
 		unset($student);
+		// kiểm tra điều kiện count = 0 (mảng rỗng)
+		if ($count == 0) {
+			throw new Exception("Cannot divide by zero.");
+		}
 		return $sum / $count;
+	}
+	// hàm phụ trợ in mảng
+	function printStudents($listStudents) {
+		if (empty($listStudents)) {
+			throw new Exception("The array is empty.");
+		}
+		foreach ($listStudents as $student) {
+			$student->display();
+		}
 	}
 
 $student1 = new Student("Nguyen Van An", 20, 8.5);
@@ -100,10 +113,8 @@ $student4 = new Student("Pham Thi Dung", 20, 7.5);
 $listStudents = array($student1, $student2, $student3, $student4);
 echo "Bài 4:\n";
 // duyệt danh sách
-echo "Danh sách các sinh viên:\n";
-foreach ($listStudents as $student) {
-	$student->display();
-}
+// kiểm tra điều kiện mảng rỗng trước
+echo "Danh sách các sinh viên:\n", printStudents($listStudents), "\n";
 // gọi các hàm của bài 4
 echo "Điểm trung bình của tất cả học sinh: ", calculateAverage($listStudents), "\n";
 echo "Sinh viên có điểm cao nhất: ", findBestStudent($listStudents), "\n";
