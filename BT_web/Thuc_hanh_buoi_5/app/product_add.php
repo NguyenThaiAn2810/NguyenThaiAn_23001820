@@ -1,4 +1,9 @@
 <?php
+session_start();
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit();
+}
 // app/product_add.php
 include 'view/header.php';
 include_once 'model/product.php';
@@ -15,10 +20,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Yêu cầu: Kiểm tra dữ liệu
     if (empty($name)) {
         $error = "Tên sản phẩm không được rỗng!";
-    } elseif ($price <= 0) {
-        $error = "Giá sản phẩm phải lớn hơn 0!";
-    } elseif ($quantity < 0) {
-        $error = "Số lượng không được nhỏ hơn 0!";
+    } elseif (!is_numeric($price) || $price <= 0) { // Fix: Bổ sung is_numeric
+        $error = "Giá sản phẩm phải là một số và lớn hơn 0!";
+    } elseif (!is_numeric($quantity) || $quantity < 0) { // Fix: Bổ sung is_numeric
+        $error = "Số lượng phải là một số và không được nhỏ hơn 0!";
     } else {
         // Hợp lệ, gọi hàm Model để lưu
         if (addProduct($name, $price, $quantity)) {

@@ -1,4 +1,9 @@
 <?php
+session_start();
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit();
+}
 // app/product_list.php
 include 'view/header.php';
 include_once 'model/product.php';
@@ -23,10 +28,10 @@ $products = getAllProducts();
         <?php else: ?>
             <?php foreach ($products as $row): ?>
                 <tr>
-                    <td><?php echo $row['id']; ?></td>
-                    <td><?php echo $row['name']; ?></td>
-                    <td><?php echo $row['price']; ?></td>
-                    <td><?php echo $row['quantity']; ?></td>
+                    <td><?php echo htmlspecialchars($row['id']); ?></td>
+                    <td><?php echo htmlspecialchars($row['name']); ?></td>
+                    <td><?php echo htmlspecialchars($row['price']); ?></td>
+                    <td><?php echo htmlspecialchars($row['quantity']); ?></td>
                     <td>
                         <a href="product_edit.php?id=<?php echo $row['id']; ?>">[Sửa]</a>
                         <a href="product_delete.php?id=<?php echo $row['id']; ?>">[Xóa]</a>

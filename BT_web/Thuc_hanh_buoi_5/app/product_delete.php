@@ -1,4 +1,9 @@
 <?php
+session_start();
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit();
+}
 // app/product_delete.php
 include 'view/header.php';
 include_once 'model/product.php';
@@ -19,7 +24,7 @@ if (!$product) {
 // Nếu người dùng ấn nút "Xác nhận xóa"
 if (isset($_POST['confirm_delete'])) {
     if (deleteProduct($id)) {
-        echo "<h3 style='color:green;'>Đã xóa sản phẩm '{$product['name']}' thành công!</h3>";
+        echo "<h3 style='color:green;'>Đã xóa sản phẩm '" . htmlspecialchars($product['name']) . "' thành công!</h3>";
         echo "<a href='product_list.php'>Về danh sách</a>";
         include 'view/footer.php';
         exit(); // Dừng trang tại đây
@@ -33,7 +38,7 @@ if (isset($_POST['confirm_delete'])) {
     <div style="border: 1px solid red; padding: 15px; width: fit-content;">
         <p>Bạn có chắc chắn muốn xóa sản phẩm này không?</p>
         <ul>
-            <li><b>Tên sản phẩm:</b> <?php echo $product['name']; ?></li>
+            <li><b>Tên sản phẩm:</b> <?php echo htmlspecialchars($product['name']); ?></li>
             <li><b>Giá:</b> <?php echo $product['price']; ?></li>
         </ul>
 
