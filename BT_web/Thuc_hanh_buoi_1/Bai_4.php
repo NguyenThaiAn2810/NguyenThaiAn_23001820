@@ -7,7 +7,6 @@ class Student {
 	// Constructor
 	function __construct($name, $age, $score) {
 		$this->name = $name;
-		$this->age = $age;
 		$this->score = $score;
   	}
 
@@ -24,15 +23,6 @@ class Student {
 			return "Trung bình";
 		} else {
 			return "Yếu";
-		}
-	}
-
-	// kiểm tra sinh viên có đạt hay không
-	function isPassed() {
-		if ($this->score >= 5) {
-			return "Đạt";
-		} else {
-			return "Không đạt";
 		}
 	}
 
