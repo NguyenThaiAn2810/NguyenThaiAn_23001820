@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Bài 3: Giỏ hàng Emit</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
+        .cart-box { max-width: 800px; margin: 0 auto; }
+        .total { text-align: right; padding: 15px; font-size: 18px; font-weight: bold; background: #f9f9f9; border: 1px solid #ddd; border-top: none; }
+    </style>
+</head>
+<body>
+<div id="app" class="cart-box">
+    <h2>Giỏ Hàng Của Bạn</h2>
+
+    <!-- 8. Hiện giỏ trống -->
+    <h3 v-if="dsGioHang.length === 0" style="color: red; text-align: center; border: 1px solid red; padding: 20px;">
+        Giỏ hàng trống
+    </h3>
+
+    <div v-else>
+        <table>
+            <thead><tr><th>Tên SP</th><th>Đơn giá</th><th>Số lượng</th><th>Thành tiền</th><th>Thao tác</th></tr></thead>
+            <tbody>
+            <!-- Component dòng giỏ hàng -->
+            <dong-gio-hang
+                    v-for="item in dsGioHang"
+                    :key="item.id"
+                    :item="item"
+                    @doi-so-luong="capNhatSoLuong"
+                    @yeu-cau-xoa="xoaSP">
+            </dong-gio-hang>
+            </tbody>
+        </table>
+
+        <div class="total">
+            Tổng số lượng: {{ tongSoLuong }} <br>
+            Thành tiền: <span style="color: red;">{{ tongTien.toLocaleString('vi-VN') }} đ</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    const app = Vue.createApp({
+        data() {
+            return {
+                // Dữ liệu test case bài yêu cầu
+                dsGioHang: [
+                    { id: 1, ten: "Bút", donGia: 5000, soLuong: 2 },
+                    { id: 2, ten: "Vở", donGia: 12000, soLuong: 3 }
+                ]
+            }
+        },
+        computed: {
+            // 7. Tổng SL và Tổng tiền
+            tongSoLuong() {
+                return this.dsGioHang.reduce((t, item) => t + item.soLuong, 0);
+            },
+            tongTien() {
+                return this.dsGioHang.reduce((t, item) => t + (item.donGia * item.soLuong), 0);
+            }
+        },
+        methods: {
+            // 4. Cha xử lý cập nhật mảng
+            capNhatSoLuong(payload) {
+                let index = this.dsGioHang.findIndex(i => i.id === payload.id);
+                if (index !== -1) {
+                    this.dsGioHang[index].soLuong = payload.slMoi;
+                }
+            },
+            xoaSP(id) {
+                this.dsGioHang = this.dsGioHang.filter(i => i.id !== id);
+            }
+        }
+    });
+
+    // 2 & 3 & 6. Component con (Chỉ nhận hiển thị và báo tín hiệu)
+    app.component('dong-gio-hang', {
+        props: { item: { type: Object, required: true } },
+        emits: ['doi-so-luong', 'yeu-cau-xoa'],
+        methods: {
+            thayDoi(delta) {
+                let slHienTai = this.item.soLuong;
+                let slMoi = slHienTai + delta;
+
+                // 5. Kiểm tra 1 -> 99 TRƯỚC KHI báo lên cha
+                if (slMoi >= 1 && slMoi <= 99) {
+                    // KHÔNG GÁN this.item.soLuong = slMoi (vi phạm luật props)
+                    // Chỉ phát tín hiệu xin cha sửa
+                    this.$emit('doi-so-luong', { id: this.item.id, slMoi: slMoi });
+                }
+            }
+        },
+        template: `
+                <tr>
+                    <td>{{ item.ten }}</td>
+                    <td>{{ item.donGia.toLocaleString('vi-VN') }} đ</td>
+                    <td>
+                        <button @click="thayDoi(-1)">-</button>
+                        <span style="display:inline-block; width: 40px;">{{ item.soLuong }}</span>
+                        <button @click="thayDoi(1)">+</button>
+                    </td>
+                    <td>{{ (item.donGia * item.soLuong).toLocaleString('vi-VN') }} đ</td>
+                    <td><button @click="$emit('yeu-cau-xoa', item.id)" style="color: red;">Xóa</button></td>
+                </tr>
+            `
+    });
+
+    app.mount("#app");
+</script>
+</body>
+</html>

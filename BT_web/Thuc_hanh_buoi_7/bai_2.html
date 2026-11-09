@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Bài 2: Component Danh mục</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <style>
+        .grid { display: flex; gap: 20px; flex-wrap: wrap; }
+        .product-card { border: 1px solid #ccc; padding: 15px; width: 220px; border-radius: 8px; box-shadow: 2px 2px 5px rgba(0,0,0,0.1);}
+    </style>
+</head>
+<body>
+<div id="app" style="padding: 20px;">
+    <h2>Danh mục sản phẩm (Components)</h2>
+    <div class="grid">
+        <!-- 4. Gọi thẻ con, truyền props -->
+        <the-san-pham
+                v-for="sp in dsSanPham"
+                :key="sp.id"
+                :ten="sp.ten"
+                :gia="sp.gia"
+                :anh="sp.anh"
+                :mo-ta="sp.moTa"
+                :ton-kho="sp.tonKho">
+        </the-san-pham>
+    </div>
+</div>
+
+<!-- 8. Nạp file JS component TRƯỚC khi khởi tạo app -->
+<script src="components/TheSanPham.js"></script>
+
+<script>
+    const app = Vue.createApp({
+        data() {
+            return {
+                // 1. Cha quản lý mảng 4 sản phẩm
+                dsSanPham: [
+                    { id: 1, ten: "Chuột không dây Logitech", gia: 350000, anh: "https://cf.shopee.vn/file/vn-11134207-7qukw-lgnfw1d39fzmba", moTa: "Chuột quang độ nhạy cao.", tonKho: 10 },
+                    { id: 2, ten: "Bàn phím cơ Akko", gia: 1200000, anh: "https://minhancomputer.com/media/lib/14-01-2021/bnphmc.jpg", moTa: "Bàn phím cơ switch Red tĩnh âm.", tonKho: 0 },
+                    { id: 3, ten: "Màn hình Dell 24 inch", gia: 4000000, anh: "https://tse2.mm.bing.net/th/id/OIP.Z_U6swwRIfP0b3ESzndpdAHaEK?r=0&pid=Api&h=220&P=0", moTa: "Màn hình viền mỏng IPS chống chói.", tonKho: 5 },
+                    { id: 4, ten: "Đế tản nhiệt Laptop", gia: 250000, anh: "https://tse1.mm.bing.net/th/id/OIP.VmvXxPFFiZRH_H8-LAy6_gHaHa?r=0&pid=Api&h=220&P=0", moTa: "Quạt kép mát lạnh.", tonKho: 20 }
+                ]
+            }
+        }
+    });
+
+    // Đăng ký component
+    app.component('the-san-pham', TheSanPham);
+
+    app.mount("#app");
+</script>
+</body>
+</html>
